@@ -9,7 +9,7 @@ type checker struct {
 	validate *validator.Validate
 }
 
-func (c *checker) ValidateStruct(s interface{}) error {
+func (c *checker) ValidateDto(s interface{}) error {
 	return c.validate.Struct(s)
 }
 

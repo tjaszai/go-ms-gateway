@@ -45,9 +45,9 @@ func Create(c *fiber.Ctx) error {
 		return c.JSON(fiber.Map{"success": false, "message": "Invalid data.", "data": nil})
 	}
 
-	paramChecker := validator.Checker
+	checker := validator.Checker
 
-	if err := paramChecker.ValidateStruct(dto); err != nil {
+	if err := checker.ValidateDto(dto); err != nil {
 		return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{"success": false, "message": "Invalid data.", "data": nil, "error": err.Error()})
 	}
 

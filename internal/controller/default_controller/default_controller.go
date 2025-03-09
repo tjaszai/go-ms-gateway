@@ -5,8 +5,10 @@ import (
 	"github.com/tjaszai/go-ms-gateway/internal/database"
 )
 
+// TODO: swagger annotations...
+
 func Index(c *fiber.Ctx) error {
-	return c.SendString("Hello World!")
+	return c.JSON(fiber.Map{"success": true, "message": "Hello World!"})
 }
 
 func HealthCheck(c *fiber.Ctx) error {
