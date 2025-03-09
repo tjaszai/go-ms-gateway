@@ -14,7 +14,7 @@ func Config(key string, defaultValue ...string) string {
 
 	value, ok := os.LookupEnv(key)
 	if (!ok || value == "") && len(defaultValue) > 0 {
-		fmt.Printf("Using default value '%v'\n", defaultValue[0])
+		fmt.Printf("Using default value '%s'\n", defaultValue[0])
 		return defaultValue[0]
 	}
 
