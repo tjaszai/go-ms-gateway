@@ -61,6 +61,12 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/dto.RespDto"
                         }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrRespDto"
+                        }
                     }
                 }
             },
@@ -135,6 +141,12 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/dto.RespDto"
                         }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrRespDto"
+                        }
                     }
                 }
             },
@@ -173,6 +185,24 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/dto.RespDto"
                         }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrRespDto"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrRespDto"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrRespDto"
+                        }
                     }
                 }
             },
@@ -198,7 +228,22 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.RespDto"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrRespDto"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrRespDto"
+                        }
                     }
                 }
             }

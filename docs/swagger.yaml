@@ -66,6 +66,10 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/dto.RespDto'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
       tags:
       - Microservices
     post:
@@ -112,6 +116,16 @@ paths:
       responses:
         "200":
           description: OK
+          schema:
+            $ref: '#/definitions/dto.RespDto'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
       tags:
       - Microservices
     get:
@@ -131,6 +145,10 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/dto.RespDto'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
       tags:
       - Microservices
     post:
@@ -156,6 +174,18 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/dto.RespDto'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
       tags:
       - Microservices
 swagger: "2.0"
