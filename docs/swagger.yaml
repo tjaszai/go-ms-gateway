@@ -1,0 +1,161 @@
+basePath: /
+definitions:
+  dto.ErrRespDto:
+    properties:
+      errors:
+        description: 'TODO: generic field...'
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  dto.MsReqDto:
+    properties:
+      description:
+        type: string
+      name:
+        description: 'TODO: unique name validator...'
+        maxLength: 255
+        minLength: 1
+        type: string
+    required:
+    - name
+    type: object
+  dto.RespDto:
+    properties:
+      data:
+        description: 'TODO: generic field...'
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+info:
+  contact: {}
+  description: The MSG provides tools for managing microservices.
+  title: Go Microservice Gateway
+  version: 0.1.0
+paths:
+  /HealthCheck:
+    get:
+      consumes:
+      - application/json
+      description: Check the status of the application
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.RespDto'
+        "502":
+          description: Bad Gateway
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
+      tags:
+      - Default
+  /api/Microservices:
+    get:
+      consumes:
+      - application/json
+      description: Get all existing microservices
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.RespDto'
+      tags:
+      - Microservices
+    post:
+      consumes:
+      - application/json
+      description: Create a microservice
+      parameters:
+      - description: Microservice dto object
+        in: body
+        name: microservice
+        required: true
+        schema:
+          $ref: '#/definitions/dto.MsReqDto'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.RespDto'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
+      tags:
+      - Microservices
+  /api/Microservices/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a microservice by ID
+      parameters:
+      - description: Microservice ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      tags:
+      - Microservices
+    get:
+      consumes:
+      - application/json
+      description: Get one microservice by ID
+      parameters:
+      - description: Microservice ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.RespDto'
+      tags:
+      - Microservices
+    post:
+      consumes:
+      - application/json
+      description: Update a microservice by ID
+      parameters:
+      - description: Microservice ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Microservice dto object
+        in: body
+        name: microservice
+        required: true
+        schema:
+          $ref: '#/definitions/dto.MsReqDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.RespDto'
+      tags:
+      - Microservices
+swagger: "2.0"

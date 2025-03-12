@@ -1,24 +1,15 @@
 package main
 
-import (
-	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/logger"
-	"github.com/tjaszai/go-ms-gateway/internal/config"
-	"github.com/tjaszai/go-ms-gateway/internal/database"
-	"github.com/tjaszai/go-ms-gateway/internal/service/router"
-	"log"
-	"time"
-)
+import "log"
 
+// @title          Go Microservice Gateway
+// @version        0.1.0
+// @description    The MSG provides tools for managing microservices.
+// @BasePath       /
 func main() {
-	app := fiber.New()
-	// Database
-	database.InitConnection(5, 5*time.Second)
-	// Routes
-	router.SetupRoutes(app)
-	// Middlewares
-	app.Use(logger.New())
-
-	port := config.Config("APP_PORT", "3000")
-	log.Fatal(app.Listen(":" + port))
+	server, err := InitializeServer()
+	if err != nil {
+		log.Fatalf("failed to initialize server: %v", err)
+	}
+	server.Run()
 }
