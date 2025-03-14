@@ -1,21 +1,23 @@
 package dto
 
-type RespDto struct {
+type MessageRespDto RespDto[*string]
+
+type RespDto[T any] struct {
 	Success bool   `json:"success"`
 	Message string `json:"message"`
-	Data    any    `json:"data,omitempty"` // TODO: generic field...
+	Data    *T     `json:"data,omitempty"`
 }
 
-func NewRespDto(message string, data any) *RespDto {
-	return &RespDto{Success: true, Message: message, Data: data}
+func NewRespDto[T any](message string, data *T) *RespDto[T] {
+	return &RespDto[T]{Success: true, Message: message, Data: data}
 }
 
 type ErrRespDto struct {
-	Success bool   `json:"success"`
-	Message string `json:"message"`
-	Errors  any    `json:"errors,omitempty"` // TODO: generic field...
+	Success bool     `json:"success"`
+	Message string   `json:"message"`
+	Errors  []string `json:"errors,omitempty"`
 }
 
-func NewErrRespDto(message string, errors any) *ErrRespDto {
+func NewErrRespDto(message string, errors []string) *ErrRespDto {
 	return &ErrRespDto{Success: false, Message: message, Errors: errors}
 }

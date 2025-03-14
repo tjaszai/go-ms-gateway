@@ -3,7 +3,38 @@ definitions:
   dto.ErrRespDto:
     properties:
       errors:
-        description: 'TODO: generic field...'
+        items:
+          type: string
+        type: array
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  dto.MessageRespDto:
+    properties:
+      data:
+        type: string
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  dto.MsDto:
+    properties:
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  dto.MsListRespDto:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dto.MsDto'
+        type: array
       message:
         type: string
       success:
@@ -14,17 +45,16 @@ definitions:
       description:
         type: string
       name:
-        description: 'TODO: unique name validator...'
         maxLength: 255
         minLength: 1
         type: string
     required:
     - name
     type: object
-  dto.RespDto:
+  dto.MsRespDto:
     properties:
       data:
-        description: 'TODO: generic field...'
+        $ref: '#/definitions/dto.MsDto'
       message:
         type: string
       success:
@@ -47,7 +77,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.RespDto'
+            $ref: '#/definitions/dto.MessageRespDto'
         "502":
           description: Bad Gateway
           schema:
@@ -65,7 +95,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.RespDto'
+            $ref: '#/definitions/dto.MsListRespDto'
         "500":
           description: Internal Server Error
           schema:
@@ -89,7 +119,7 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/dto.RespDto'
+            $ref: '#/definitions/dto.MsRespDto'
         "422":
           description: Unprocessable Entity
           schema:
@@ -117,7 +147,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.RespDto'
+            $ref: '#/definitions/dto.MessageRespDto'
         "404":
           description: Not Found
           schema:
@@ -144,14 +174,14 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.RespDto'
+            $ref: '#/definitions/dto.MsRespDto'
         "404":
           description: Not Found
           schema:
             $ref: '#/definitions/dto.ErrRespDto'
       tags:
       - Microservices
-    post:
+    put:
       consumes:
       - application/json
       description: Update a microservice by ID
@@ -173,7 +203,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.RespDto'
+            $ref: '#/definitions/dto.MsRespDto'
         "404":
           description: Not Found
           schema:

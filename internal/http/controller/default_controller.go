@@ -15,7 +15,7 @@ func NewDefaultController(m *db.DatabaseManager) *DefaultController {
 }
 
 func (dc *DefaultController) Index(c *fiber.Ctx) error {
-	return c.JSON(dto.NewRespDto("Hello world!", nil))
+	return c.JSON(dto.NewRespDto[*string]("Hello world!", nil))
 }
 
 // HealthCheck func check the status of the application
@@ -23,12 +23,12 @@ func (dc *DefaultController) Index(c *fiber.Ctx) error {
 // @Tags           Default
 // @Accept         json
 // @Produce        json
-// @Success        200 {object} dto.RespDto
+// @Success        200 {object} dto.MessageRespDto
 // @Failure        502 {object} dto.ErrRespDto
 // @Router         /HealthCheck [get]
 func (dc *DefaultController) HealthCheck(c *fiber.Ctx) error {
 	if dc.DatabaseManager.CheckConnection() != nil {
 		return c.Status(fiber.StatusBadGateway).JSON(dto.NewErrRespDto("Service is down", nil))
 	}
-	return c.JSON(dto.NewRespDto("Service is up", nil))
+	return c.JSON(dto.NewRespDto[*string]("Service is up", nil))
 }

@@ -24,7 +24,7 @@ func NewMicroserviceController(r *repository.MicroserviceRepository, v *service.
 // @Accept         json
 // @Produce        json
 // @Param          microservice body dto.MsReqDto true "Microservice dto object"
-// @Success        201 {object} dto.RespDto
+// @Success        201 {object} dto.MsRespDto
 // @Failure        422 {object} dto.ErrRespDto
 // @Failure        500 {object} dto.ErrRespDto
 // @Router         /api/Microservices [post]
@@ -36,7 +36,8 @@ func (mc *MicroserviceController) Create(c *fiber.Ctx) error {
 	}
 	if err := mc.ModelValidator.Validate(reqDto); err != nil {
 		log.Println(err)
-		return c.Status(fiber.StatusUnprocessableEntity).JSON(dto.NewErrRespDto("Invalid request body", err.Error()))
+		errList := []string{err.Error()}
+		return c.Status(fiber.StatusUnprocessableEntity).JSON(dto.NewErrRespDto("Invalid request body", errList))
 	}
 	m, err := mc.Repository.CreateFromReqDto(reqDto)
 	if err != nil {
@@ -44,7 +45,7 @@ func (mc *MicroserviceController) Create(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(dto.NewErrRespDto("Failed to create microservice.", nil))
 	}
 	resDto := dto.NewMsRespDtoFromModel(m)
-	return c.Status(fiber.StatusCreated).JSON(dto.NewRespDto("Microservice Created.", resDto))
+	return c.Status(fiber.StatusCreated).JSON(dto.NewRespDto[*dto.MsDto]("Microservice Created.", &resDto))
 }
 
 // GetOne func get one microservice by ID
@@ -53,7 +54,7 @@ func (mc *MicroserviceController) Create(c *fiber.Ctx) error {
 // @Accept         json
 // @Produce        json
 // @Param          id path string true "Microservice ID"
-// @Success        200 {object} dto.RespDto
+// @Success        200 {object} dto.MsRespDto
 // @Failure        404 {object} dto.ErrRespDto
 // @Router         /api/Microservices/{id} [get]
 func (mc *MicroserviceController) GetOne(c *fiber.Ctx) error {
@@ -63,7 +64,7 @@ func (mc *MicroserviceController) GetOne(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusNotFound).JSON(dto.NewErrRespDto("Microservice not found.", nil))
 	}
 	resDto := dto.NewMsRespDtoFromModel(m)
-	return c.JSON(dto.NewRespDto("Microservice Found.", resDto))
+	return c.JSON(dto.NewRespDto[*dto.MsDto]("Microservice Found.", &resDto))
 }
 
 // Update func update a microservice by ID
@@ -73,11 +74,11 @@ func (mc *MicroserviceController) GetOne(c *fiber.Ctx) error {
 // @Produce        json
 // @Param          id path string true "Microservice ID"
 // @Param          microservice body dto.MsReqDto true "Microservice dto object"
-// @Success        200 {object} dto.RespDto
+// @Success        200 {object} dto.MsRespDto
 // @Failure        404 {object} dto.ErrRespDto
 // @Failure        422 {object} dto.ErrRespDto
 // @Failure        500 {object} dto.ErrRespDto
-// @Router         /api/Microservices/{id} [post]
+// @Router         /api/Microservices/{id} [put]
 func (mc *MicroserviceController) Update(c *fiber.Ctx) error {
 	id := c.Params("id")
 	m, _ := mc.Repository.Find(id)
@@ -91,7 +92,8 @@ func (mc *MicroserviceController) Update(c *fiber.Ctx) error {
 	}
 	if err := mc.ModelValidator.Validate(reqDto); err != nil {
 		log.Println(err)
-		return c.Status(fiber.StatusUnprocessableEntity).JSON(dto.NewErrRespDto("Invalid request body", err.Error()))
+		errList := []string{err.Error()}
+		return c.Status(fiber.StatusUnprocessableEntity).JSON(dto.NewErrRespDto("Invalid request body", errList))
 	}
 	m = reqDto.MsReqToModel(m)
 	if err := mc.Repository.Update(m); err != nil {
@@ -99,7 +101,7 @@ func (mc *MicroserviceController) Update(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(dto.NewErrRespDto("Failed to update Microservice.", nil))
 	}
 	resDto := dto.NewMsRespDtoFromModel(m)
-	return c.JSON(dto.NewRespDto("Microservice Updated.", resDto))
+	return c.JSON(dto.NewRespDto[*dto.MsDto]("Microservice Updated.", &resDto))
 }
 
 // Delete func delete a microservice by ID
@@ -108,7 +110,7 @@ func (mc *MicroserviceController) Update(c *fiber.Ctx) error {
 // @Accept         json
 // @Produce        json
 // @Param          id path string true "Microservice ID"
-// @Success        200 {object} dto.RespDto
+// @Success        200 {object} dto.MessageRespDto
 // @Failure        404 {object} dto.ErrRespDto
 // @Failure        500 {object} dto.ErrRespDto
 // @Router         /api/Microservices/{id} [delete]
@@ -123,7 +125,7 @@ func (mc *MicroserviceController) Delete(c *fiber.Ctx) error {
 		log.Println(err)
 		return c.Status(fiber.StatusInternalServerError).JSON(dto.NewErrRespDto("Failed to delete microservice.", nil))
 	}
-	return c.JSON(dto.NewRespDto("Microservice Deleted.", nil))
+	return c.JSON(dto.NewRespDto[*string]("Microservice Deleted.", nil))
 }
 
 // GetAll func gets all existing microservices
@@ -131,7 +133,7 @@ func (mc *MicroserviceController) Delete(c *fiber.Ctx) error {
 // @Tags           Microservices
 // @Accept         json
 // @Produce        json
-// @Success        200 {object} dto.RespDto
+// @Success        200 {object} dto.MsListRespDto
 // @Failure        500 {object} dto.ErrRespDto
 // @Router         /api/Microservices [get]
 func (mc *MicroserviceController) GetAll(c *fiber.Ctx) error {
@@ -141,5 +143,5 @@ func (mc *MicroserviceController) GetAll(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(dto.NewErrRespDto("Unexpected error.", nil))
 	}
 	resDto := dto.NewMsRespListDtoFromModels(m)
-	return c.JSON(dto.NewRespDto("Microservices Found.", resDto))
+	return c.JSON(dto.NewRespDto[[]dto.MsDto]("Microservices Found.", &resDto))
 }

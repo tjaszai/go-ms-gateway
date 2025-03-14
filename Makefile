@@ -1,6 +1,6 @@
 build:
 	cd ./cmd && wire && cd ..
-	swag init --dir ./cmd,./internal --output ./docs
+	swag init --dir cmd,internal --output ./docs --parseDependency true --parseInternal true
 	go build -o release/app cmd/main.go cmd/wire_gen.go
 
 start:

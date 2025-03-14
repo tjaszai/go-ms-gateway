@@ -12,6 +12,7 @@ import (
 
 var entityList = []interface{}{
 	&model.Microservice{},
+	&model.MicroserviceVersion{},
 }
 
 type DatabaseManager struct {

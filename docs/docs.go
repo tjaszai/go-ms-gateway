@@ -31,7 +31,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.RespDto"
+                            "$ref": "#/definitions/dto.MessageRespDto"
                         }
                     },
                     "502": {
@@ -59,7 +59,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.RespDto"
+                            "$ref": "#/definitions/dto.MsListRespDto"
                         }
                     },
                     "500": {
@@ -96,7 +96,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/dto.RespDto"
+                            "$ref": "#/definitions/dto.MsRespDto"
                         }
                     },
                     "422": {
@@ -139,7 +139,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.RespDto"
+                            "$ref": "#/definitions/dto.MsRespDto"
                         }
                     },
                     "404": {
@@ -150,7 +150,7 @@ const docTemplate = `{
                     }
                 }
             },
-            "post": {
+            "put": {
                 "description": "Update a microservice by ID",
                 "consumes": [
                     "application/json"
@@ -183,7 +183,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.RespDto"
+                            "$ref": "#/definitions/dto.MsRespDto"
                         }
                     },
                     "404": {
@@ -230,7 +230,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.RespDto"
+                            "$ref": "#/definitions/dto.MessageRespDto"
                         }
                     },
                     "404": {
@@ -254,7 +254,55 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "errors": {
-                    "description": "TODO: generic field..."
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "dto.MessageRespDto": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "dto.MsDto": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.MsListRespDto": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.MsDto"
+                    }
                 },
                 "message": {
                     "type": "string"
@@ -274,18 +322,17 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "name": {
-                    "description": "TODO: unique name validator...",
                     "type": "string",
                     "maxLength": 255,
                     "minLength": 1
                 }
             }
         },
-        "dto.RespDto": {
+        "dto.MsRespDto": {
             "type": "object",
             "properties": {
                 "data": {
-                    "description": "TODO: generic field..."
+                    "$ref": "#/definitions/dto.MsDto"
                 },
                 "message": {
                     "type": "string"
