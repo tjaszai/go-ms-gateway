@@ -17,11 +17,12 @@ import (
 // Injectors from wire.go:
 
 func InitializeServer() (*server.Server, error) {
+	defaultController := controller.NewDefaultController()
 	databaseManager := db.NewDatabaseManager()
-	defaultController := controller.NewDefaultController(databaseManager)
+	gatewayController := controller.NewGatewayController(databaseManager)
 	microserviceRepository := repository.NewMicroserviceRepository(databaseManager)
 	modelValidator := service.NewModelValidator()
 	microserviceController := controller.NewMicroserviceController(microserviceRepository, modelValidator)
-	serverServer := server.NewServer(defaultController, microserviceController)
+	serverServer := server.NewServer(defaultController, gatewayController, microserviceController)
 	return serverServer, nil
 }

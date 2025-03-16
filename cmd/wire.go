@@ -15,6 +15,7 @@ func InitializeServer() (*server.Server, error) {
 	wire.Build(
 		db.NewDatabaseManager,
 		controller.NewDefaultController,
+		controller.NewGatewayController,
 		controller.NewMicroserviceController,
 		repository.NewMicroserviceRepository,
 		service.NewModelValidator,

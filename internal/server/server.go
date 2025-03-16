@@ -13,13 +13,15 @@ import (
 type Server struct {
 	App                    *fiber.App
 	DefaultController      *controller.DefaultController
+	GatewayController      *controller.GatewayController
 	MicroserviceController *controller.MicroserviceController
 }
 
-func NewServer(dc *controller.DefaultController, mc *controller.MicroserviceController) *Server {
+func NewServer(dc *controller.DefaultController, gc *controller.GatewayController, mc *controller.MicroserviceController) *Server {
 	server := &Server{
 		App:                    fiber.New(),
 		DefaultController:      dc,
+		GatewayController:      gc,
 		MicroserviceController: mc,
 	}
 	server.setupRoutes()
@@ -29,16 +31,20 @@ func NewServer(dc *controller.DefaultController, mc *controller.MicroserviceCont
 }
 
 func (s *Server) setupRoutes() {
-	s.setupDefaultRoutes()
-
 	apiRouter := s.App.Group("/api")
+	s.setupDefaultRoutes()
+	s.setupGatewayRoutes(apiRouter)
 	s.setupMSRoutes(apiRouter)
 }
 
 func (s *Server) setupDefaultRoutes() {
 	s.App.Get("/", s.DefaultController.Index)
-	s.App.Get("/docs/*", swagger.HandlerDefault)
-	s.App.Get("/HealthCheck", s.DefaultController.HealthCheck)
+}
+
+func (s *Server) setupGatewayRoutes(router fiber.Router) {
+	router.Get("/docs/*", swagger.HandlerDefault)
+	router.Get("/HealthCheck", s.GatewayController.HealthCheck)
+	router.Post("/CallMs", s.GatewayController.CallMs)
 }
 
 func (s *Server) setupMSRoutes(router fiber.Router) {

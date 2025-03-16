@@ -15,7 +15,29 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/HealthCheck": {
+        "/api/CallMs": {
+            "post": {
+                "description": "It provides an interface for calling registered microservices",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Gateway"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.MessageRespDto"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/HealthCheck": {
             "get": {
                 "description": "Check the status of the application",
                 "consumes": [
@@ -25,7 +47,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Default"
+                    "Gateway"
                 ],
                 "responses": {
                     "200": {
