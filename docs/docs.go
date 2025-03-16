@@ -15,6 +15,51 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/Auth/Login": {
+            "post": {
+                "description": "User authentication",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Security"
+                ],
+                "parameters": [
+                    {
+                        "description": "LoginUser dto object",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.LoginUserReqDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/dto.DataRespDto"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrRespDto"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrRespDto"
+                        }
+                    }
+                }
+            }
+        },
         "/api/CallMs": {
             "post": {
                 "description": "It provides an interface for calling registered microservices",
@@ -502,6 +547,9 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.DataRespDto": {
+            "type": "object"
+        },
         "dto.ErrRespDto": {
             "type": "object",
             "properties": {
@@ -516,6 +564,25 @@ const docTemplate = `{
                 },
                 "success": {
                     "type": "boolean"
+                }
+            }
+        },
+        "dto.LoginUserReqDto": {
+            "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "minLength": 1
+                },
+                "password": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "minLength": 1
                 }
             }
         },

@@ -19,6 +19,8 @@ definitions:
     - name
     - password
     type: object
+  dto.DataRespDto:
+    type: object
   dto.ErrRespDto:
     properties:
       errors:
@@ -29,6 +31,20 @@ definitions:
         type: string
       success:
         type: boolean
+    type: object
+  dto.LoginUserReqDto:
+    properties:
+      email:
+        maxLength: 255
+        minLength: 1
+        type: string
+      password:
+        maxLength: 255
+        minLength: 1
+        type: string
+    required:
+    - email
+    - password
     type: object
   dto.MessageRespDto:
     properties:
@@ -129,6 +145,35 @@ info:
   title: Go Microservice Gateway
   version: 0.1.0
 paths:
+  /api/Auth/Login:
+    post:
+      consumes:
+      - application/json
+      description: User authentication
+      parameters:
+      - description: LoginUser dto object
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LoginUserReqDto'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.DataRespDto'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
+      tags:
+      - Security
   /api/CallMs:
     post:
       consumes:

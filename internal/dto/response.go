@@ -1,5 +1,6 @@
 package dto
 
+type DataRespDto RespDto[map[string]string]
 type MessageRespDto RespDto[*string]
 
 type RespDto[T any] struct {

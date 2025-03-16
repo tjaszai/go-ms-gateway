@@ -15,18 +15,21 @@ type Server struct {
 	DefaultController      *controller.DefaultController
 	GatewayController      *controller.GatewayController
 	MicroserviceController *controller.MicroserviceController
+	SecurityController     *controller.SecurityController
 	UserController         *controller.UserController
 }
 
 func NewServer(dc *controller.DefaultController,
 	gc *controller.GatewayController,
 	mc *controller.MicroserviceController,
+	sc *controller.SecurityController,
 	uc *controller.UserController) *Server {
 	server := &Server{
 		App:                    fiber.New(),
 		DefaultController:      dc,
 		GatewayController:      gc,
 		MicroserviceController: mc,
+		SecurityController:     sc,
 		UserController:         uc,
 	}
 	server.setupRoutes()
@@ -40,6 +43,7 @@ func (s *Server) setupRoutes() {
 	s.setupDefaultRoutes()
 	s.setupGatewayRoutes(apiRouter)
 	s.setupMSRoutes(apiRouter)
+	s.setupSecurityRoutes(apiRouter)
 	s.setupUserRoutes(apiRouter)
 }
 
@@ -60,6 +64,11 @@ func (s *Server) setupMSRoutes(router fiber.Router) {
 	msRouter.Put("/:id", s.MicroserviceController.Update)
 	msRouter.Delete("/:id", s.MicroserviceController.Delete)
 	msRouter.Get("/", s.MicroserviceController.GetAll)
+}
+
+func (s *Server) setupSecurityRoutes(router fiber.Router) {
+	msRouter := router.Group("/Auth")
+	msRouter.Post("/Login", s.SecurityController.Login)
 }
 
 func (s *Server) setupUserRoutes(router fiber.Router) {

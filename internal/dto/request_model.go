@@ -54,3 +54,8 @@ func (d *UpdateUserReqDto) UserReqDtoToModel(m *model.User) *model.User {
 	}
 	return m
 }
+
+type LoginUserReqDto struct {
+	Email    string `json:"email" validate:"required,gte=1,lte=255,email"`
+	Password string `json:"password" validate:"required,gte=1,lte=255"`
+}
