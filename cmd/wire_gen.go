@@ -23,6 +23,8 @@ func InitializeServer() (*server.Server, error) {
 	microserviceRepository := repository.NewMicroserviceRepository(databaseManager)
 	modelValidator := service.NewModelValidator()
 	microserviceController := controller.NewMicroserviceController(microserviceRepository, modelValidator)
-	serverServer := server.NewServer(defaultController, gatewayController, microserviceController)
+	userRepository := repository.NewUserRepository(databaseManager)
+	userController := controller.NewUserController(userRepository, modelValidator)
+	serverServer := server.NewServer(defaultController, gatewayController, microserviceController, userController)
 	return serverServer, nil
 }

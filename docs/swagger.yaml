@@ -1,5 +1,24 @@
 basePath: /
 definitions:
+  dto.CreateUserReqDto:
+    properties:
+      email:
+        maxLength: 255
+        minLength: 1
+        type: string
+      name:
+        maxLength: 255
+        minLength: 1
+        type: string
+      password:
+        maxLength: 255
+        minLength: 1
+        type: string
+    required:
+    - email
+    - name
+    - password
+    type: object
   dto.ErrRespDto:
     properties:
       errors:
@@ -55,6 +74,50 @@ definitions:
     properties:
       data:
         $ref: '#/definitions/dto.MsDto'
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  dto.UpdateUserReqDto:
+    properties:
+      email:
+        maxLength: 255
+        minLength: 1
+        type: string
+      name:
+        maxLength: 255
+        minLength: 1
+        type: string
+      password:
+        maxLength: 255
+        minLength: 1
+        type: string
+    type: object
+  dto.UserDto:
+    properties:
+      email:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  dto.UserListRespDto:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dto.UserDto'
+        type: array
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  dto.UserRespDto:
+    properties:
+      data:
+        $ref: '#/definitions/dto.UserDto'
       message:
         type: string
       success:
@@ -232,4 +295,138 @@ paths:
             $ref: '#/definitions/dto.ErrRespDto'
       tags:
       - Microservices
+  /api/Users:
+    get:
+      consumes:
+      - application/json
+      description: Get all existing users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UserListRespDto'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
+      tags:
+      - Users
+    post:
+      consumes:
+      - application/json
+      description: Create a user
+      parameters:
+      - description: User dto object
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateUserReqDto'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.UserRespDto'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
+      tags:
+      - Users
+  /api/Users/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.MessageRespDto'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
+      tags:
+      - Users
+    get:
+      consumes:
+      - application/json
+      description: Get one user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UserRespDto'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
+      tags:
+      - Users
+    put:
+      consumes:
+      - application/json
+      description: Update a user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: User dto object
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateUserReqDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UserRespDto'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
+      tags:
+      - Users
 swagger: "2.0"

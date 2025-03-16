@@ -15,14 +15,19 @@ type Server struct {
 	DefaultController      *controller.DefaultController
 	GatewayController      *controller.GatewayController
 	MicroserviceController *controller.MicroserviceController
+	UserController         *controller.UserController
 }
 
-func NewServer(dc *controller.DefaultController, gc *controller.GatewayController, mc *controller.MicroserviceController) *Server {
+func NewServer(dc *controller.DefaultController,
+	gc *controller.GatewayController,
+	mc *controller.MicroserviceController,
+	uc *controller.UserController) *Server {
 	server := &Server{
 		App:                    fiber.New(),
 		DefaultController:      dc,
 		GatewayController:      gc,
 		MicroserviceController: mc,
+		UserController:         uc,
 	}
 	server.setupRoutes()
 	server.setupMiddlewares()
@@ -35,6 +40,7 @@ func (s *Server) setupRoutes() {
 	s.setupDefaultRoutes()
 	s.setupGatewayRoutes(apiRouter)
 	s.setupMSRoutes(apiRouter)
+	s.setupUserRoutes(apiRouter)
 }
 
 func (s *Server) setupDefaultRoutes() {
@@ -54,6 +60,15 @@ func (s *Server) setupMSRoutes(router fiber.Router) {
 	msRouter.Put("/:id", s.MicroserviceController.Update)
 	msRouter.Delete("/:id", s.MicroserviceController.Delete)
 	msRouter.Get("/", s.MicroserviceController.GetAll)
+}
+
+func (s *Server) setupUserRoutes(router fiber.Router) {
+	msRouter := router.Group("/Users")
+	msRouter.Post("/", s.UserController.Create)
+	msRouter.Get("/:id", s.UserController.GetOne)
+	msRouter.Put("/:id", s.UserController.Update)
+	msRouter.Delete("/:id", s.UserController.Delete)
+	msRouter.Get("/", s.UserController.GetAll)
 }
 
 func (s *Server) setupMiddlewares() {

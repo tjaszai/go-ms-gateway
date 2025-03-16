@@ -17,7 +17,9 @@ func InitializeServer() (*server.Server, error) {
 		controller.NewDefaultController,
 		controller.NewGatewayController,
 		controller.NewMicroserviceController,
+		controller.NewUserController,
 		repository.NewMicroserviceRepository,
+		repository.NewUserRepository,
 		service.NewModelValidator,
 		server.NewServer,
 	)

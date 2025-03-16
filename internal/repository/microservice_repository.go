@@ -34,7 +34,7 @@ func (r *MicroserviceRepository) FindByName(name string) (*model.Microservice, e
 }
 
 func (r *MicroserviceRepository) CreateFromReqDto(d *dto.MsReqDto) (*model.Microservice, error) {
-	m := d.MsReqToModel(nil)
+	m := d.MsReqDtoToModel(nil)
 	m.ID = uuid.New()
 	err := r.DatabaseManager.GetDB().Create(&m).Error
 	return m, err

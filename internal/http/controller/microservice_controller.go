@@ -44,8 +44,8 @@ func (mc *MicroserviceController) Create(c *fiber.Ctx) error {
 		log.Println(err)
 		return c.Status(fiber.StatusInternalServerError).JSON(dto.NewErrRespDto("Failed to create microservice.", nil))
 	}
-	resDto := dto.NewMsRespDtoFromModel(m)
-	return c.Status(fiber.StatusCreated).JSON(dto.NewRespDto[*dto.MsDto]("Microservice Created.", &resDto))
+	msDto := dto.NewMsDtoFromModel(m)
+	return c.Status(fiber.StatusCreated).JSON(dto.NewRespDto[*dto.MsDto]("Microservice Created.", &msDto))
 }
 
 // GetOne func get one microservice by ID
@@ -63,8 +63,8 @@ func (mc *MicroserviceController) GetOne(c *fiber.Ctx) error {
 	if m.ID == uuid.Nil {
 		return c.Status(fiber.StatusNotFound).JSON(dto.NewErrRespDto("Microservice not found.", nil))
 	}
-	resDto := dto.NewMsRespDtoFromModel(m)
-	return c.JSON(dto.NewRespDto[*dto.MsDto]("Microservice Found.", &resDto))
+	msDto := dto.NewMsDtoFromModel(m)
+	return c.JSON(dto.NewRespDto[*dto.MsDto]("Microservice Found.", &msDto))
 }
 
 // Update func update a microservice by ID
@@ -95,13 +95,13 @@ func (mc *MicroserviceController) Update(c *fiber.Ctx) error {
 		errList := []string{err.Error()}
 		return c.Status(fiber.StatusUnprocessableEntity).JSON(dto.NewErrRespDto("Invalid request body", errList))
 	}
-	m = reqDto.MsReqToModel(m)
+	m = reqDto.MsReqDtoToModel(m)
 	if err := mc.Repository.Update(m); err != nil {
 		log.Println(err)
 		return c.Status(fiber.StatusInternalServerError).JSON(dto.NewErrRespDto("Failed to update Microservice.", nil))
 	}
-	resDto := dto.NewMsRespDtoFromModel(m)
-	return c.JSON(dto.NewRespDto[*dto.MsDto]("Microservice Updated.", &resDto))
+	msDto := dto.NewMsDtoFromModel(m)
+	return c.JSON(dto.NewRespDto[*dto.MsDto]("Microservice Updated.", &msDto))
 }
 
 // Delete func delete a microservice by ID
@@ -142,6 +142,6 @@ func (mc *MicroserviceController) GetAll(c *fiber.Ctx) error {
 		log.Println(err)
 		return c.Status(fiber.StatusInternalServerError).JSON(dto.NewErrRespDto("Unexpected error.", nil))
 	}
-	resDto := dto.NewMsRespListDtoFromModels(m)
-	return c.JSON(dto.NewRespDto[[]dto.MsDto]("Microservices Found.", &resDto))
+	msListDto := dto.NewMsListDtoFromModels(m)
+	return c.JSON(dto.NewRespDto[[]dto.MsDto]("Microservices Found.", &msListDto))
 }
