@@ -6,55 +6,53 @@ import (
 	"github.com/tjaszai/go-ms-gateway/internal/util"
 )
 
-// TODO: ms version dto...
+type MsRespDto RespDto[*MsOutputDto]
+type MsListRespDto RespDto[[]MsOutputDto]
 
-type MsRespDto RespDto[*MsDto]
-type MsListRespDto RespDto[[]MsDto]
-
-type MsDto struct {
+type MsOutputDto struct {
 	ID          uuid.UUID `json:"id"`
 	Name        string    `json:"name"`
 	Description *string   `json:"description,omitempty"`
 }
 
-func NewMsDtoFromModel(m *model.Microservice) *MsDto {
-	return &MsDto{
+func NewMsOutputDtoFromModel(m *model.Microservice) *MsOutputDto {
+	return &MsOutputDto{
 		ID:          m.ID,
 		Name:        m.Name,
 		Description: util.FromNullString(m.Description),
 	}
 }
 
-func NewMsListDtoFromModels(models []model.Microservice) []MsDto {
-	var mld []MsDto
+func NewMsOutputListDtoFromModels(models []model.Microservice) []MsOutputDto {
+	var mld []MsOutputDto
 	for _, m := range models {
-		d := NewMsDtoFromModel(&m)
+		d := NewMsOutputDtoFromModel(&m)
 		mld = append(mld, *d)
 	}
 	return mld
 }
 
-type UserRespDto RespDto[*UserDto]
-type UserListRespDto RespDto[[]UserDto]
+type UserRespDto RespDto[*UserOutputDto]
+type UserListRespDto RespDto[[]UserOutputDto]
 
-type UserDto struct {
+type UserOutputDto struct {
 	ID    uuid.UUID `json:"id"`
 	Name  string    `json:"name"`
 	Email string    `json:"email"`
 }
 
-func NewUserDtoFromModel(m *model.User) *UserDto {
-	return &UserDto{
+func NewUserOutputDtoFromModel(m *model.User) *UserOutputDto {
+	return &UserOutputDto{
 		ID:    m.ID,
 		Name:  m.Name,
 		Email: m.Email,
 	}
 }
 
-func NewUserListDtoFromModels(models []model.User) []UserDto {
-	var uld []UserDto
+func NewUserOutputListDtoFromModels(models []model.User) []UserOutputDto {
+	var uld []UserOutputDto
 	for _, m := range models {
-		d := NewUserDtoFromModel(&m)
+		d := NewUserOutputDtoFromModel(&m)
 		uld = append(uld, *d)
 	}
 	return uld

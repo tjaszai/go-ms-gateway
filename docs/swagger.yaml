@@ -1,38 +1,18 @@
 basePath: /
 definitions:
-  dto.CreateUserReqDto:
-    properties:
-      email:
-        maxLength: 255
-        minLength: 1
-        type: string
-      name:
-        maxLength: 255
-        minLength: 1
-        type: string
-      password:
-        maxLength: 255
-        minLength: 1
-        type: string
-    required:
-    - email
-    - name
-    - password
-    type: object
   dto.DataRespDto:
     type: object
   dto.ErrRespDto:
     properties:
       errors:
-        items:
-          type: string
-        type: array
+        additionalProperties: {}
+        type: object
       message:
         type: string
       success:
         type: boolean
     type: object
-  dto.LoginUserReqDto:
+  dto.LoginInputDto:
     properties:
       email:
         maxLength: 255
@@ -55,27 +35,7 @@ definitions:
       success:
         type: boolean
     type: object
-  dto.MsDto:
-    properties:
-      description:
-        type: string
-      id:
-        type: string
-      name:
-        type: string
-    type: object
-  dto.MsListRespDto:
-    properties:
-      data:
-        items:
-          $ref: '#/definitions/dto.MsDto'
-        type: array
-      message:
-        type: string
-      success:
-        type: boolean
-    type: object
-  dto.MsReqDto:
+  dto.MsInputDto:
     properties:
       description:
         type: string
@@ -86,16 +46,36 @@ definitions:
     required:
     - name
     type: object
-  dto.MsRespDto:
+  dto.MsListRespDto:
     properties:
       data:
-        $ref: '#/definitions/dto.MsDto'
+        items:
+          $ref: '#/definitions/dto.MsOutputDto'
+        type: array
       message:
         type: string
       success:
         type: boolean
     type: object
-  dto.UpdateUserReqDto:
+  dto.MsOutputDto:
+    properties:
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  dto.MsRespDto:
+    properties:
+      data:
+        $ref: '#/definitions/dto.MsOutputDto'
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  dto.UserInputDto:
     properties:
       email:
         maxLength: 255
@@ -109,8 +89,23 @@ definitions:
         maxLength: 255
         minLength: 1
         type: string
+    required:
+    - email
+    - name
+    - password
     type: object
-  dto.UserDto:
+  dto.UserListRespDto:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dto.UserOutputDto'
+        type: array
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  dto.UserOutputDto:
     properties:
       email:
         type: string
@@ -119,21 +114,10 @@ definitions:
       name:
         type: string
     type: object
-  dto.UserListRespDto:
-    properties:
-      data:
-        items:
-          $ref: '#/definitions/dto.UserDto'
-        type: array
-      message:
-        type: string
-      success:
-        type: boolean
-    type: object
   dto.UserRespDto:
     properties:
       data:
-        $ref: '#/definitions/dto.UserDto'
+        $ref: '#/definitions/dto.UserOutputDto'
       message:
         type: string
       success:
@@ -145,35 +129,6 @@ info:
   title: Go Microservice Gateway
   version: 0.1.0
 paths:
-  /api/Auth/Login:
-    post:
-      consumes:
-      - application/json
-      description: User authentication
-      parameters:
-      - description: LoginUser dto object
-        in: body
-        name: user
-        required: true
-        schema:
-          $ref: '#/definitions/dto.LoginUserReqDto'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/dto.DataRespDto'
-        "422":
-          description: Unprocessable Entity
-          schema:
-            $ref: '#/definitions/dto.ErrRespDto'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/dto.ErrRespDto'
-      tags:
-      - Security
   /api/CallMs:
     post:
       consumes:
@@ -186,6 +141,12 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/dto.MessageRespDto'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
+      security:
+      - BearerAuth: []
       tags:
       - Gateway
   /api/HealthCheck:
@@ -218,10 +179,16 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/dto.MsListRespDto'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
         "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/dto.ErrRespDto'
+      security:
+      - BearerAuth: []
       tags:
       - Microservices
     post:
@@ -234,7 +201,7 @@ paths:
         name: microservice
         required: true
         schema:
-          $ref: '#/definitions/dto.MsReqDto'
+          $ref: '#/definitions/dto.MsInputDto'
       produces:
       - application/json
       responses:
@@ -242,6 +209,14 @@ paths:
           description: Created
           schema:
             $ref: '#/definitions/dto.MsRespDto'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
         "422":
           description: Unprocessable Entity
           schema:
@@ -250,6 +225,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/dto.ErrRespDto'
+      security:
+      - BearerAuth: []
       tags:
       - Microservices
   /api/Microservices/{id}:
@@ -270,6 +247,14 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/dto.MessageRespDto'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
         "404":
           description: Not Found
           schema:
@@ -278,6 +263,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/dto.ErrRespDto'
+      security:
+      - BearerAuth: []
       tags:
       - Microservices
     get:
@@ -297,10 +284,16 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/dto.MsRespDto'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
         "404":
           description: Not Found
           schema:
             $ref: '#/definitions/dto.ErrRespDto'
+      security:
+      - BearerAuth: []
       tags:
       - Microservices
     put:
@@ -318,7 +311,7 @@ paths:
         name: microservice
         required: true
         schema:
-          $ref: '#/definitions/dto.MsReqDto'
+          $ref: '#/definitions/dto.MsInputDto'
       produces:
       - application/json
       responses:
@@ -326,6 +319,53 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/dto.MsRespDto'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
+      security:
+      - BearerAuth: []
+      tags:
+      - Microservices
+  /api/Security/Login:
+    post:
+      consumes:
+      - application/json
+      description: User authentication
+      parameters:
+      - description: LoginInputDto dto object
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LoginInputDto'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.DataRespDto'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
         "404":
           description: Not Found
           schema:
@@ -339,7 +379,7 @@ paths:
           schema:
             $ref: '#/definitions/dto.ErrRespDto'
       tags:
-      - Microservices
+      - Security
   /api/Users:
     get:
       consumes:
@@ -352,10 +392,16 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/dto.UserListRespDto'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
         "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/dto.ErrRespDto'
+      security:
+      - BearerAuth: []
       tags:
       - Users
     post:
@@ -368,7 +414,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/dto.CreateUserReqDto'
+          $ref: '#/definitions/dto.UserInputDto'
       produces:
       - application/json
       responses:
@@ -376,6 +422,14 @@ paths:
           description: Created
           schema:
             $ref: '#/definitions/dto.UserRespDto'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
         "422":
           description: Unprocessable Entity
           schema:
@@ -384,6 +438,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/dto.ErrRespDto'
+      security:
+      - BearerAuth: []
       tags:
       - Users
   /api/Users/{id}:
@@ -404,6 +460,14 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/dto.MessageRespDto'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
         "404":
           description: Not Found
           schema:
@@ -412,6 +476,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/dto.ErrRespDto'
+      security:
+      - BearerAuth: []
       tags:
       - Users
     get:
@@ -431,10 +497,16 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/dto.UserRespDto'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
         "404":
           description: Not Found
           schema:
             $ref: '#/definitions/dto.ErrRespDto'
+      security:
+      - BearerAuth: []
       tags:
       - Users
     put:
@@ -452,7 +524,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/dto.UpdateUserReqDto'
+          $ref: '#/definitions/dto.UserInputDto'
       produces:
       - application/json
       responses:
@@ -460,6 +532,14 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/dto.UserRespDto'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
         "404":
           description: Not Found
           schema:
@@ -472,6 +552,13 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/dto.ErrRespDto'
+      security:
+      - BearerAuth: []
       tags:
       - Users
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

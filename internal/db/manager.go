@@ -10,7 +10,7 @@ import (
 	"log"
 )
 
-var entityList = []interface{}{
+var modelList = []interface{}{
 	&model.Microservice{},
 	&model.MicroserviceVersion{},
 	&model.User{},
@@ -35,9 +35,9 @@ func NewDatabaseManager() *DatabaseManager {
 		log.Println(err)
 		panic("Failed to connect to database")
 	}
-	err = db.AutoMigrate(entityList...)
+	err = db.AutoMigrate(modelList...)
 	if err != nil {
-		log.Printf("Failed to migrate entity list: %v\n", err)
+		log.Printf("Failed to migrate model list: %v\n", err)
 		panic("Database migration failed")
 	}
 	fmt.Println("Connected to database")

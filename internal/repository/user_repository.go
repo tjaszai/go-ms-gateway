@@ -1,10 +1,11 @@
 package repository
 
 import (
-	"github.com/google/uuid"
 	"github.com/tjaszai/go-ms-gateway/internal/db"
 	"github.com/tjaszai/go-ms-gateway/internal/dto"
 	"github.com/tjaszai/go-ms-gateway/internal/model"
+	"github.com/tjaszai/go-ms-gateway/internal/util"
+	"strings"
 )
 
 type UserRepository struct {
@@ -29,30 +30,30 @@ func (r *UserRepository) Find(id string) (*model.User, error) {
 
 func (r *UserRepository) FindByEmail(email string) (*model.User, error) {
 	var m model.User
-	err := r.DatabaseManager.GetDB().Where("email = ?", email).First(&m).Error
+	err := r.DatabaseManager.GetDB().Where("email = ?", strings.ToLower(email)).First(&m).Error
 	return &m, err
 }
 
-func (r *UserRepository) CreateFromReqDto(d *dto.CreateUserReqDto) (*model.User, error) {
-	m := d.UserReqDtoToModel()
-	if err := m.HashPassword(); err != nil {
+func (r *UserRepository) CreateFrom(d *dto.UserInputDto) (*model.User, error) {
+	m := d.ToModel(nil)
+	pwd, err := util.GenerateUserPwdHash(m.Password)
+	if err != nil {
 		return nil, err
 	}
-	m.ID = uuid.New()
-	err := r.DatabaseManager.GetDB().Create(&m).Error
+	m.Password = *pwd
+	err = r.DatabaseManager.GetDB().Create(&m).Error
 	return m, err
 }
 
-func (r *UserRepository) Update(d *dto.UpdateUserReqDto, m *model.User) error {
-	var err error
-	m = d.UserReqDtoToModel(m)
-	if d.Password != nil {
-		err = m.HashPassword()
-		if err != nil {
-			return err
-		}
+func (r *UserRepository) UpdateFrom(m *model.User, d *dto.UserInputDto) (*model.User, error) {
+	m = d.ToModel(m)
+	pwd, err := util.GenerateUserPwdHash(m.Password)
+	if err != nil {
+		return nil, err
 	}
-	return r.DatabaseManager.GetDB().Save(m).Error
+	m.Password = *pwd
+	err = r.DatabaseManager.GetDB().Save(m).Error
+	return m, err
 }
 
 func (r *UserRepository) Delete(id string) error {

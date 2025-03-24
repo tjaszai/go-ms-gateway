@@ -7,6 +7,7 @@ import (
 	"github.com/tjaszai/go-ms-gateway/config"
 	_ "github.com/tjaszai/go-ms-gateway/docs"
 	"github.com/tjaszai/go-ms-gateway/internal/http/controller"
+	"github.com/tjaszai/go-ms-gateway/internal/http/middleware"
 	"log"
 )
 
@@ -17,13 +18,18 @@ type Server struct {
 	MicroserviceController *controller.MicroserviceController
 	SecurityController     *controller.SecurityController
 	UserController         *controller.UserController
+	AdminGuardMiddleware   *middleware.AdminGuardMiddleware
+	AuthMiddleware         *middleware.AuthMiddleware
 }
 
-func NewServer(dc *controller.DefaultController,
+func NewServer(
+	dc *controller.DefaultController,
 	gc *controller.GatewayController,
 	mc *controller.MicroserviceController,
 	sc *controller.SecurityController,
-	uc *controller.UserController) *Server {
+	uc *controller.UserController,
+	agm *middleware.AdminGuardMiddleware,
+	am *middleware.AuthMiddleware) *Server {
 	server := &Server{
 		App:                    fiber.New(),
 		DefaultController:      dc,
@@ -31,6 +37,8 @@ func NewServer(dc *controller.DefaultController,
 		MicroserviceController: mc,
 		SecurityController:     sc,
 		UserController:         uc,
+		AdminGuardMiddleware:   agm,
+		AuthMiddleware:         am,
 	}
 	server.setupRoutes()
 	server.setupMiddlewares()
@@ -52,32 +60,32 @@ func (s *Server) setupDefaultRoutes() {
 }
 
 func (s *Server) setupGatewayRoutes(router fiber.Router) {
+	router.Post("/CallMs", s.AuthMiddleware.Check, s.GatewayController.CallMs)
 	router.Get("/docs/*", swagger.HandlerDefault)
 	router.Get("/HealthCheck", s.GatewayController.HealthCheck)
-	router.Post("/CallMs", s.GatewayController.CallMs)
 }
 
 func (s *Server) setupMSRoutes(router fiber.Router) {
-	msRouter := router.Group("/Microservices")
-	msRouter.Post("/", s.MicroserviceController.Create)
-	msRouter.Get("/:id", s.MicroserviceController.GetOne)
-	msRouter.Put("/:id", s.MicroserviceController.Update)
-	msRouter.Delete("/:id", s.MicroserviceController.Delete)
+	msRouter := router.Group("/Microservices", s.AuthMiddleware.Check)
 	msRouter.Get("/", s.MicroserviceController.GetAll)
+	msRouter.Post("/", s.AdminGuardMiddleware.Check, s.MicroserviceController.Create)
+	msRouter.Get("/:id", s.MicroserviceController.GetOne)
+	msRouter.Put("/:id", s.AdminGuardMiddleware.Check, s.MicroserviceController.Update)
+	msRouter.Delete("/:id", s.AdminGuardMiddleware.Check, s.MicroserviceController.Delete)
 }
 
 func (s *Server) setupSecurityRoutes(router fiber.Router) {
-	msRouter := router.Group("/Auth")
-	msRouter.Post("/Login", s.SecurityController.Login)
+	secRouter := router.Group("/Security")
+	secRouter.Post("/Login", s.SecurityController.Login)
 }
 
 func (s *Server) setupUserRoutes(router fiber.Router) {
-	msRouter := router.Group("/Users")
-	msRouter.Post("/", s.UserController.Create)
-	msRouter.Get("/:id", s.UserController.GetOne)
-	msRouter.Put("/:id", s.UserController.Update)
-	msRouter.Delete("/:id", s.UserController.Delete)
-	msRouter.Get("/", s.UserController.GetAll)
+	userRouter := router.Group("/Users", s.AuthMiddleware.Check)
+	userRouter.Get("/", s.UserController.GetAll)
+	userRouter.Post("/", s.AdminGuardMiddleware.Check, s.UserController.Create)
+	userRouter.Get("/:id", s.UserController.GetOne)
+	userRouter.Put("/:id", s.AdminGuardMiddleware.Check, s.UserController.Update)
+	userRouter.Delete("/:id", s.AdminGuardMiddleware.Check, s.UserController.Delete)
 }
 
 func (s *Server) setupMiddlewares() {

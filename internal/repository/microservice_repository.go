@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"github.com/google/uuid"
 	"github.com/tjaszai/go-ms-gateway/internal/db"
 	"github.com/tjaszai/go-ms-gateway/internal/dto"
 	"github.com/tjaszai/go-ms-gateway/internal/model"
@@ -33,15 +32,16 @@ func (r *MicroserviceRepository) FindByName(name string) (*model.Microservice, e
 	return &m, err
 }
 
-func (r *MicroserviceRepository) CreateFromReqDto(d *dto.MsReqDto) (*model.Microservice, error) {
-	m := d.MsReqDtoToModel(nil)
-	m.ID = uuid.New()
+func (r *MicroserviceRepository) CreateFrom(d *dto.MsInputDto) (*model.Microservice, error) {
+	m := d.ToModel(nil)
 	err := r.DatabaseManager.GetDB().Create(&m).Error
 	return m, err
 }
 
-func (r *MicroserviceRepository) Update(m *model.Microservice) error {
-	return r.DatabaseManager.GetDB().Save(m).Error
+func (r *MicroserviceRepository) UpdateFrom(m *model.Microservice, d *dto.MsInputDto) (*model.Microservice, error) {
+	m = d.ToModel(m)
+	err := r.DatabaseManager.GetDB().Save(m).Error
+	return m, err
 }
 
 func (r *MicroserviceRepository) Delete(id string) error {

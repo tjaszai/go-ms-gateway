@@ -1,28 +1,28 @@
 package service
 
 import (
-	"github.com/go-playground/validator/v10"
+	baseValidator "github.com/go-playground/validator/v10"
 	"regexp"
 )
 
-type ModelValidator struct {
-	validate *validator.Validate
+type Validator struct {
+	validate *baseValidator.Validate
 }
 
-func NewModelValidator() *ModelValidator {
-	v := validator.New()
+func NewValidator() *Validator {
+	v := baseValidator.New()
 	err := v.RegisterValidation("regex_pattern", validatorRegexPatternValidation)
 	if err != nil {
 		return nil
 	}
-	return &ModelValidator{validate: v}
+	return &Validator{validate: v}
 }
 
-func (mv *ModelValidator) Validate(m interface{}) error {
-	return mv.validate.Struct(m)
+func (mv *Validator) ValidateObject(o interface{}) error {
+	return mv.validate.Struct(o)
 }
 
-func validatorRegexPatternValidation(fl validator.FieldLevel) bool {
+func validatorRegexPatternValidation(fl baseValidator.FieldLevel) bool {
 	param := fl.Param()
 	field := fl.Field().String()
 	matched, err := regexp.MatchString(param, field)

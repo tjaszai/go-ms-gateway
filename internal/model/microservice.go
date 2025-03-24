@@ -6,13 +6,16 @@ import (
 	"gorm.io/gorm"
 )
 
-// TODO: fix unique index -> soft delete
-
 type Microservice struct {
 	gorm.Model
 	ID          uuid.UUID      `gorm:"type:uuid"`
 	Name        string         `gorm:"uniqueIndex:ms_name_uniq_idx"`
 	Description sql.NullString `gorm:"type:text"`
+}
+
+func (m *Microservice) BeforeCreate(tx *gorm.DB) error {
+	m.ID = uuid.New()
+	return nil
 }
 
 type MicroserviceVersion struct {
@@ -24,4 +27,9 @@ type MicroserviceVersion struct {
 	Description    sql.NullString `gorm:"type:text"`
 	Url            string
 	OpenAPIUrl     string
+}
+
+func (mv *MicroserviceVersion) BeforeCreate(tx *gorm.DB) error {
+	mv.ID = uuid.New()
+	return nil
 }

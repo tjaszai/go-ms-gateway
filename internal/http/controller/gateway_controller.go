@@ -26,17 +26,18 @@ func (gc *GatewayController) HealthCheck(c *fiber.Ctx) error {
 	if gc.DatabaseManager.CheckConnection() != nil {
 		return c.Status(fiber.StatusBadGateway).JSON(dto.NewErrRespDto("Service is down", nil))
 	}
-	return c.JSON(dto.NewRespDto[*string]("Service is up", nil))
+	return c.Status(fiber.StatusOK).JSON(dto.NewRespDto[*string]("Service is up", nil))
 }
 
 // CallMs func provides an interface for calling registered microservices
 // @Description    It provides an interface for calling registered microservices
+// @Security       BearerAuth
 // @Tags           Gateway
 // @Accept         json
 // @Produce        json
 // @Success        200 {object} dto.MessageRespDto
+// @Failure        401 {object} dto.ErrRespDto
 // @Router         /api/CallMs [post]
 func (gc *GatewayController) CallMs(c *fiber.Ctx) error {
-	// TODO: implement method
 	return c.JSON(dto.NewRespDto[*string]("Todo.", nil))
 }

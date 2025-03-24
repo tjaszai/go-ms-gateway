@@ -14,11 +14,11 @@ func NewRespDto[T any](message string, data *T) *RespDto[T] {
 }
 
 type ErrRespDto struct {
-	Success bool     `json:"success"`
-	Message string   `json:"message"`
-	Errors  []string `json:"errors,omitempty"`
+	Success bool            `json:"success"`
+	Message string          `json:"message"`
+	Errors  *map[string]any `json:"errors,omitempty"`
 }
 
-func NewErrRespDto(message string, errors []string) *ErrRespDto {
+func NewErrRespDto(message string, errors *map[string]any) *ErrRespDto {
 	return &ErrRespDto{Success: false, Message: message, Errors: errors}
 }

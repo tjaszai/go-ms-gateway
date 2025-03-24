@@ -9,8 +9,9 @@ package main
 import (
 	"github.com/tjaszai/go-ms-gateway/internal/db"
 	"github.com/tjaszai/go-ms-gateway/internal/http/controller"
+	"github.com/tjaszai/go-ms-gateway/internal/http/middleware"
+	"github.com/tjaszai/go-ms-gateway/internal/http/server"
 	"github.com/tjaszai/go-ms-gateway/internal/repository"
-	"github.com/tjaszai/go-ms-gateway/internal/server"
 	"github.com/tjaszai/go-ms-gateway/internal/service"
 )
 
@@ -21,12 +22,14 @@ func InitializeServer() (*server.Server, error) {
 	databaseManager := db.NewDatabaseManager()
 	gatewayController := controller.NewGatewayController(databaseManager)
 	microserviceRepository := repository.NewMicroserviceRepository(databaseManager)
-	modelValidator := service.NewModelValidator()
-	microserviceController := controller.NewMicroserviceController(microserviceRepository, modelValidator)
+	validator := service.NewValidator()
+	microserviceController := controller.NewMicroserviceController(microserviceRepository, validator)
 	userRepository := repository.NewUserRepository(databaseManager)
-	securityService := service.NewSecurityService()
-	securityController := controller.NewSecurityController(userRepository, modelValidator, securityService)
-	userController := controller.NewUserController(userRepository, modelValidator)
-	serverServer := server.NewServer(defaultController, gatewayController, microserviceController, securityController, userController)
+	securityService := service.NewSecurityService(userRepository)
+	securityController := controller.NewSecurityController(userRepository, validator, securityService)
+	userController := controller.NewUserController(userRepository, validator)
+	adminGuardMiddleware := middleware.NewAdminGuardMiddleware(securityService)
+	authMiddleware := middleware.NewAuthMiddleware(securityService)
+	serverServer := server.NewServer(defaultController, gatewayController, microserviceController, securityController, userController, adminGuardMiddleware, authMiddleware)
 	return serverServer, nil
 }

@@ -15,53 +15,13 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/Auth/Login": {
-            "post": {
-                "description": "User authentication",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Security"
-                ],
-                "parameters": [
-                    {
-                        "description": "LoginUser dto object",
-                        "name": "user",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.LoginUserReqDto"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/dto.DataRespDto"
-                        }
-                    },
-                    "422": {
-                        "description": "Unprocessable Entity",
-                        "schema": {
-                            "$ref": "#/definitions/dto.ErrRespDto"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/dto.ErrRespDto"
-                        }
-                    }
-                }
-            }
-        },
         "/api/CallMs": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "It provides an interface for calling registered microservices",
                 "consumes": [
                     "application/json"
@@ -77,6 +37,12 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/dto.MessageRespDto"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrRespDto"
                         }
                     }
                 }
@@ -112,6 +78,11 @@ const docTemplate = `{
         },
         "/api/Microservices": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get all existing microservices",
                 "consumes": [
                     "application/json"
@@ -129,6 +100,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/dto.MsListRespDto"
                         }
                     },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrRespDto"
+                        }
+                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
@@ -138,6 +115,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Create a microservice",
                 "consumes": [
                     "application/json"
@@ -155,7 +137,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.MsReqDto"
+                            "$ref": "#/definitions/dto.MsInputDto"
                         }
                     }
                 ],
@@ -164,6 +146,18 @@ const docTemplate = `{
                         "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/dto.MsRespDto"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrRespDto"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrRespDto"
                         }
                     },
                     "422": {
@@ -183,6 +177,11 @@ const docTemplate = `{
         },
         "/api/Microservices/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get one microservice by ID",
                 "consumes": [
                     "application/json"
@@ -209,6 +208,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/dto.MsRespDto"
                         }
                     },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrRespDto"
+                        }
+                    },
                     "404": {
                         "description": "Not Found",
                         "schema": {
@@ -218,6 +223,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Update a microservice by ID",
                 "consumes": [
                     "application/json"
@@ -242,7 +252,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.MsReqDto"
+                            "$ref": "#/definitions/dto.MsInputDto"
                         }
                     }
                 ],
@@ -251,6 +261,18 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/dto.MsRespDto"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrRespDto"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrRespDto"
                         }
                     },
                     "404": {
@@ -274,6 +296,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Delete a microservice by ID",
                 "consumes": [
                     "application/json"
@@ -300,6 +327,18 @@ const docTemplate = `{
                             "$ref": "#/definitions/dto.MessageRespDto"
                         }
                     },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrRespDto"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrRespDto"
+                        }
+                    },
                     "404": {
                         "description": "Not Found",
                         "schema": {
@@ -315,8 +354,70 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/Security/Login": {
+            "post": {
+                "description": "User authentication",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Security"
+                ],
+                "parameters": [
+                    {
+                        "description": "LoginInputDto dto object",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.LoginInputDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/dto.DataRespDto"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrRespDto"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrRespDto"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrRespDto"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrRespDto"
+                        }
+                    }
+                }
+            }
+        },
         "/api/Users": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get all existing users",
                 "consumes": [
                     "application/json"
@@ -334,6 +435,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/dto.UserListRespDto"
                         }
                     },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrRespDto"
+                        }
+                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
@@ -343,6 +450,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Create a user",
                 "consumes": [
                     "application/json"
@@ -360,7 +472,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.CreateUserReqDto"
+                            "$ref": "#/definitions/dto.UserInputDto"
                         }
                     }
                 ],
@@ -369,6 +481,18 @@ const docTemplate = `{
                         "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/dto.UserRespDto"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrRespDto"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrRespDto"
                         }
                     },
                     "422": {
@@ -388,6 +512,11 @@ const docTemplate = `{
         },
         "/api/Users/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get one user by ID",
                 "consumes": [
                     "application/json"
@@ -414,6 +543,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/dto.UserRespDto"
                         }
                     },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrRespDto"
+                        }
+                    },
                     "404": {
                         "description": "Not Found",
                         "schema": {
@@ -423,6 +558,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Update a user by ID",
                 "consumes": [
                     "application/json"
@@ -447,7 +587,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.UpdateUserReqDto"
+                            "$ref": "#/definitions/dto.UserInputDto"
                         }
                     }
                 ],
@@ -456,6 +596,18 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/dto.UserRespDto"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrRespDto"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrRespDto"
                         }
                     },
                     "404": {
@@ -479,6 +631,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Delete a user by ID",
                 "consumes": [
                     "application/json"
@@ -505,6 +662,18 @@ const docTemplate = `{
                             "$ref": "#/definitions/dto.MessageRespDto"
                         }
                     },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrRespDto"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrRespDto"
+                        }
+                    },
                     "404": {
                         "description": "Not Found",
                         "schema": {
@@ -522,31 +691,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "dto.CreateUserReqDto": {
-            "type": "object",
-            "required": [
-                "email",
-                "name",
-                "password"
-            ],
-            "properties": {
-                "email": {
-                    "type": "string",
-                    "maxLength": 255,
-                    "minLength": 1
-                },
-                "name": {
-                    "type": "string",
-                    "maxLength": 255,
-                    "minLength": 1
-                },
-                "password": {
-                    "type": "string",
-                    "maxLength": 255,
-                    "minLength": 1
-                }
-            }
-        },
         "dto.DataRespDto": {
             "type": "object"
         },
@@ -554,10 +698,8 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "errors": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
+                    "type": "object",
+                    "additionalProperties": {}
                 },
                 "message": {
                     "type": "string"
@@ -567,7 +709,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.LoginUserReqDto": {
+        "dto.LoginInputDto": {
             "type": "object",
             "required": [
                 "email",
@@ -600,38 +742,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.MsDto": {
-            "type": "object",
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "dto.MsListRespDto": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/dto.MsDto"
-                    }
-                },
-                "message": {
-                    "type": "string"
-                },
-                "success": {
-                    "type": "boolean"
-                }
-            }
-        },
-        "dto.MsReqDto": {
+        "dto.MsInputDto": {
             "type": "object",
             "required": [
                 "name"
@@ -647,11 +758,14 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.MsRespDto": {
+        "dto.MsListRespDto": {
             "type": "object",
             "properties": {
                 "data": {
-                    "$ref": "#/definitions/dto.MsDto"
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.MsOutputDto"
+                    }
                 },
                 "message": {
                     "type": "string"
@@ -661,8 +775,41 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.UpdateUserReqDto": {
+        "dto.MsOutputDto": {
             "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.MsRespDto": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/dto.MsOutputDto"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "dto.UserInputDto": {
+            "type": "object",
+            "required": [
+                "email",
+                "name",
+                "password"
+            ],
             "properties": {
                 "email": {
                     "type": "string",
@@ -681,7 +828,24 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.UserDto": {
+        "dto.UserListRespDto": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.UserOutputDto"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "dto.UserOutputDto": {
             "type": "object",
             "properties": {
                 "email": {
@@ -695,28 +859,11 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.UserListRespDto": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/dto.UserDto"
-                    }
-                },
-                "message": {
-                    "type": "string"
-                },
-                "success": {
-                    "type": "boolean"
-                }
-            }
-        },
         "dto.UserRespDto": {
             "type": "object",
             "properties": {
                 "data": {
-                    "$ref": "#/definitions/dto.UserDto"
+                    "$ref": "#/definitions/dto.UserOutputDto"
                 },
                 "message": {
                     "type": "string"
@@ -725,6 +872,13 @@ const docTemplate = `{
                     "type": "boolean"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }`
