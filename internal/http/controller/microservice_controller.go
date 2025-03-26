@@ -24,7 +24,7 @@ func NewMicroserviceController(r *repository.MicroserviceRepository, v *service.
 // @Tags           Microservices
 // @Accept         json
 // @Produce        json
-// @Param          microservice body dto.MsInputDto true "Microservice dto object"
+// @Param          Microservice body dto.MsInputDto true "Microservice dto object"
 // @Success        201 {object} dto.MsRespDto
 // @Failure        401 {object} dto.ErrRespDto
 // @Failure        403 {object} dto.ErrRespDto
@@ -79,7 +79,7 @@ func (mc *MicroserviceController) GetOne(c *fiber.Ctx) error {
 // @Accept         json
 // @Produce        json
 // @Param          id path string true "Microservice ID"
-// @Param          microservice body dto.MsInputDto true "Microservice dto object"
+// @Param          Microservice body dto.MsInputDto true "Microservice dto object"
 // @Success        200 {object} dto.MsRespDto
 // @Failure        401 {object} dto.ErrRespDto
 // @Failure        403 {object} dto.ErrRespDto

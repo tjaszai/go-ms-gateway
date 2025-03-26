@@ -12,33 +12,36 @@ import (
 )
 
 type Server struct {
-	App                    *fiber.App
-	DefaultController      *controller.DefaultController
-	GatewayController      *controller.GatewayController
-	MicroserviceController *controller.MicroserviceController
-	SecurityController     *controller.SecurityController
-	UserController         *controller.UserController
-	AdminGuardMiddleware   *middleware.AdminGuardMiddleware
-	AuthMiddleware         *middleware.AuthMiddleware
+	App                           *fiber.App
+	DefaultController             *controller.DefaultController
+	GatewayController             *controller.GatewayController
+	MicroserviceController        *controller.MicroserviceController
+	MicroserviceVersionController *controller.MicroserviceVersionController
+	SecurityController            *controller.SecurityController
+	UserController                *controller.UserController
+	AdminGuardMiddleware          *middleware.AdminGuardMiddleware
+	AuthMiddleware                *middleware.AuthMiddleware
 }
 
 func NewServer(
 	dc *controller.DefaultController,
 	gc *controller.GatewayController,
 	mc *controller.MicroserviceController,
+	mvc *controller.MicroserviceVersionController,
 	sc *controller.SecurityController,
 	uc *controller.UserController,
 	agm *middleware.AdminGuardMiddleware,
 	am *middleware.AuthMiddleware) *Server {
 	server := &Server{
-		App:                    fiber.New(),
-		DefaultController:      dc,
-		GatewayController:      gc,
-		MicroserviceController: mc,
-		SecurityController:     sc,
-		UserController:         uc,
-		AdminGuardMiddleware:   agm,
-		AuthMiddleware:         am,
+		App:                           fiber.New(),
+		DefaultController:             dc,
+		GatewayController:             gc,
+		MicroserviceController:        mc,
+		MicroserviceVersionController: mvc,
+		SecurityController:            sc,
+		UserController:                uc,
+		AdminGuardMiddleware:          agm,
+		AuthMiddleware:                am,
 	}
 	server.setupRoutes()
 	server.setupMiddlewares()
@@ -72,6 +75,13 @@ func (s *Server) setupMSRoutes(router fiber.Router) {
 	msRouter.Get("/:id", s.MicroserviceController.GetOne)
 	msRouter.Put("/:id", s.AdminGuardMiddleware.Check, s.MicroserviceController.Update)
 	msRouter.Delete("/:id", s.AdminGuardMiddleware.Check, s.MicroserviceController.Delete)
+
+	msVersionRouter := msRouter.Group("/:id/Versions", s.AuthMiddleware.Check)
+	msVersionRouter.Get("/", s.MicroserviceVersionController.GetAll)
+	msVersionRouter.Post("/", s.AdminGuardMiddleware.Check, s.MicroserviceVersionController.Create)
+	msVersionRouter.Get("/:vid", s.MicroserviceVersionController.GetOne)
+	msVersionRouter.Put("/:vid", s.AdminGuardMiddleware.Check, s.MicroserviceVersionController.Update)
+	msVersionRouter.Delete("/:vid", s.AdminGuardMiddleware.Check, s.MicroserviceVersionController.Delete)
 }
 
 func (s *Server) setupSecurityRoutes(router fiber.Router) {

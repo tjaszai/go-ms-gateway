@@ -24,12 +24,43 @@ func NewMsOutputDtoFromModel(m *model.Microservice) *MsOutputDto {
 }
 
 func NewMsOutputListDtoFromModels(models []model.Microservice) []MsOutputDto {
-	var mld []MsOutputDto
+	var ld []MsOutputDto
 	for _, m := range models {
 		d := NewMsOutputDtoFromModel(&m)
-		mld = append(mld, *d)
+		ld = append(ld, *d)
 	}
-	return mld
+	return ld
+}
+
+type MsVersionRespDto RespDto[*MsVersionOutputDto]
+
+type MsVersionListRespDto RespDto[[]MsVersionOutputDto]
+
+type MsVersionOutputDto struct {
+	ID          uuid.UUID `json:"id"`
+	Name        string    `json:"name"`
+	Description *string   `json:"description,omitempty"`
+	Url         string    `json:"url"`
+	OpenAPIUrl  string    `json:"openapi_url"`
+}
+
+func NewMsVersionOutputDtoFromModel(m *model.MicroserviceVersion) *MsVersionOutputDto {
+	return &MsVersionOutputDto{
+		ID:          m.ID,
+		Name:        m.Name,
+		Description: util.FromNullString(m.Description),
+		Url:         m.Url,
+		OpenAPIUrl:  m.OpenAPIUrl,
+	}
+}
+
+func NewMsVersionOutputListDtoFromModels(models []model.MicroserviceVersion) []MsVersionOutputDto {
+	var ld []MsVersionOutputDto
+	for _, m := range models {
+		d := NewMsVersionOutputDtoFromModel(&m)
+		ld = append(ld, *d)
+	}
+	return ld
 }
 
 type UserRespDto RespDto[*UserOutputDto]

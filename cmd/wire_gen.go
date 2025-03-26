@@ -24,12 +24,14 @@ func InitializeServer() (*server.Server, error) {
 	microserviceRepository := repository.NewMicroserviceRepository(databaseManager)
 	validator := service.NewValidator()
 	microserviceController := controller.NewMicroserviceController(microserviceRepository, validator)
+	microserviceVersionRepository := repository.NewMicroserviceVersionRepository(databaseManager)
+	microserviceVersionController := controller.NewMicroserviceVersionController(microserviceRepository, microserviceVersionRepository, validator)
 	userRepository := repository.NewUserRepository(databaseManager)
 	securityService := service.NewSecurityService(userRepository)
 	securityController := controller.NewSecurityController(userRepository, validator, securityService)
 	userController := controller.NewUserController(userRepository, validator)
 	adminGuardMiddleware := middleware.NewAdminGuardMiddleware(securityService)
 	authMiddleware := middleware.NewAuthMiddleware(securityService)
-	serverServer := server.NewServer(defaultController, gatewayController, microserviceController, securityController, userController, adminGuardMiddleware, authMiddleware)
+	serverServer := server.NewServer(defaultController, gatewayController, microserviceController, microserviceVersionController, securityController, userController, adminGuardMiddleware, authMiddleware)
 	return serverServer, nil
 }

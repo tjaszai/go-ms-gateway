@@ -40,7 +40,7 @@ definitions:
       description:
         type: string
       name:
-        maxLength: 255
+        maxLength: 100
         minLength: 1
         type: string
     required:
@@ -70,6 +70,60 @@ definitions:
     properties:
       data:
         $ref: '#/definitions/dto.MsOutputDto'
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  dto.MsVersionInputDto:
+    properties:
+      description:
+        type: string
+      name:
+        maxLength: 30
+        minLength: 1
+        type: string
+      openapi_url:
+        maxLength: 255
+        minLength: 1
+        type: string
+      url:
+        maxLength: 255
+        minLength: 1
+        type: string
+    required:
+    - name
+    - openapi_url
+    - url
+    type: object
+  dto.MsVersionListRespDto:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dto.MsVersionOutputDto'
+        type: array
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  dto.MsVersionOutputDto:
+    properties:
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      openapi_url:
+        type: string
+      url:
+        type: string
+    type: object
+  dto.MsVersionRespDto:
+    properties:
+      data:
+        $ref: '#/definitions/dto.MsVersionOutputDto'
       message:
         type: string
       success:
@@ -198,7 +252,7 @@ paths:
       parameters:
       - description: Microservice dto object
         in: body
-        name: microservice
+        name: Microservice
         required: true
         schema:
           $ref: '#/definitions/dto.MsInputDto'
@@ -308,7 +362,7 @@ paths:
         type: string
       - description: Microservice dto object
         in: body
-        name: microservice
+        name: Microservice
         required: true
         schema:
           $ref: '#/definitions/dto.MsInputDto'
@@ -319,6 +373,216 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/dto.MsRespDto'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
+      security:
+      - BearerAuth: []
+      tags:
+      - Microservices
+  /api/Microservices/{id}/Versions:
+    get:
+      consumes:
+      - application/json
+      description: Get all existing microservice versions
+      parameters:
+      - description: Microservice ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.MsVersionListRespDto'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
+      security:
+      - BearerAuth: []
+      tags:
+      - Microservices
+    post:
+      consumes:
+      - application/json
+      description: Create a microservice version
+      parameters:
+      - description: Microservice ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: MicroserviceVersion dto object
+        in: body
+        name: MicroserviceVersion
+        required: true
+        schema:
+          $ref: '#/definitions/dto.MsVersionInputDto'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.MsVersionRespDto'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
+      security:
+      - BearerAuth: []
+      tags:
+      - Microservices
+  /api/Microservices/{id}/Versions/{vid}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a microservice version by ID
+      parameters:
+      - description: Microservice ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Microservice version ID
+        in: path
+        name: vid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.MessageRespDto'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
+      security:
+      - BearerAuth: []
+      tags:
+      - Microservices
+    get:
+      consumes:
+      - application/json
+      description: Get one microservice version by ID
+      parameters:
+      - description: Microservice ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Microservice version ID
+        in: path
+        name: vid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.MsVersionRespDto'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrRespDto'
+      security:
+      - BearerAuth: []
+      tags:
+      - Microservices
+    put:
+      consumes:
+      - application/json
+      description: Update a microservice by ID
+      parameters:
+      - description: Microservice ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Microservice version ID
+        in: path
+        name: vid
+        required: true
+        type: string
+      - description: MicroserviceVersion dto object
+        in: body
+        name: MicroserviceVersion
+        required: true
+        schema:
+          $ref: '#/definitions/dto.MsVersionInputDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.MsVersionRespDto'
         "401":
           description: Unauthorized
           schema:

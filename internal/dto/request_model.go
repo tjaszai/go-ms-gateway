@@ -7,7 +7,7 @@ import (
 )
 
 type MsInputDto struct {
-	Name        string  `json:"name" validate:"required,gte=1,lte=255,regex_pattern=^[a-z-]+$"`
+	Name        string  `json:"name" validate:"required,gte=1,lte=100,regex_pattern=^[a-z-]+$"`
 	Description *string `json:"description,omitempty"`
 }
 
@@ -17,6 +17,24 @@ func (d *MsInputDto) ToModel(m *model.Microservice) *model.Microservice {
 	}
 	m.Name = d.Name
 	m.Description = util.ToNullString(d.Description)
+	return m
+}
+
+type MsVersionInputDto struct {
+	Name        string  `json:"name" validate:"required,gte=1,lte=30,regex_pattern=^[a-z-]+$"`
+	Description *string `json:"description,omitempty"`
+	Url         string  `json:"url" validate:"required,gte=1,lte=255,http_url"`
+	OpenAPIUrl  string  `json:"openapi_url" validate:"required,gte=1,lte=255,http_url"`
+}
+
+func (d *MsVersionInputDto) ToModel(m *model.MicroserviceVersion) *model.MicroserviceVersion {
+	if m == nil {
+		m = &model.MicroserviceVersion{}
+	}
+	m.Name = d.Name
+	m.Description = util.ToNullString(d.Description)
+	m.Url = d.Url
+	m.OpenAPIUrl = d.OpenAPIUrl
 	return m
 }
 
