@@ -1,5 +1,14 @@
 basePath: /
 definitions:
+  contract.Link:
+    properties:
+      href:
+        type: string
+      rel:
+        type: string
+      type:
+        type: string
+    type: object
   dto.DataRespDto:
     type: object
   dto.ErrRespDto:
@@ -63,6 +72,10 @@ definitions:
         type: string
       id:
         type: string
+      links:
+        items:
+          $ref: '#/definitions/contract.Link'
+        type: array
       name:
         type: string
     type: object
@@ -113,6 +126,10 @@ definitions:
         type: string
       id:
         type: string
+      links:
+        items:
+          $ref: '#/definitions/contract.Link'
+        type: array
       name:
         type: string
       openapi_url:

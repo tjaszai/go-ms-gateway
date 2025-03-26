@@ -1018,6 +1018,20 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "contract.Link": {
+            "type": "object",
+            "properties": {
+                "href": {
+                    "type": "string"
+                },
+                "rel": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.DataRespDto": {
             "type": "object"
         },
@@ -1111,6 +1125,12 @@ const docTemplate = `{
                 "id": {
                     "type": "string"
                 },
+                "links": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/contract.Link"
+                    }
+                },
                 "name": {
                     "type": "string"
                 }
@@ -1183,6 +1203,12 @@ const docTemplate = `{
                 },
                 "id": {
                     "type": "string"
+                },
+                "links": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/contract.Link"
+                    }
                 },
                 "name": {
                     "type": "string"

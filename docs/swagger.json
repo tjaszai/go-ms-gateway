@@ -1011,6 +1011,20 @@
         }
     },
     "definitions": {
+        "contract.Link": {
+            "type": "object",
+            "properties": {
+                "href": {
+                    "type": "string"
+                },
+                "rel": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.DataRespDto": {
             "type": "object"
         },
@@ -1104,6 +1118,12 @@
                 "id": {
                     "type": "string"
                 },
+                "links": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/contract.Link"
+                    }
+                },
                 "name": {
                     "type": "string"
                 }
@@ -1176,6 +1196,12 @@
                 },
                 "id": {
                     "type": "string"
+                },
+                "links": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/contract.Link"
+                    }
                 },
                 "name": {
                     "type": "string"

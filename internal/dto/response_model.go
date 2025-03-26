@@ -1,7 +1,9 @@
 package dto
 
 import (
+	"fmt"
 	"github.com/google/uuid"
+	"github.com/tjaszai/go-ms-gateway/internal/contract"
 	"github.com/tjaszai/go-ms-gateway/internal/model"
 	"github.com/tjaszai/go-ms-gateway/internal/util"
 )
@@ -10,9 +12,10 @@ type MsRespDto RespDto[*MsOutputDto]
 type MsListRespDto RespDto[[]MsOutputDto]
 
 type MsOutputDto struct {
-	ID          uuid.UUID `json:"id"`
-	Name        string    `json:"name"`
-	Description *string   `json:"description,omitempty"`
+	ID          uuid.UUID       `json:"id"`
+	Name        string          `json:"name"`
+	Description *string         `json:"description,omitempty"`
+	Links       []contract.Link `json:"links,omitempty"`
 }
 
 func NewMsOutputDtoFromModel(m *model.Microservice) *MsOutputDto {
@@ -20,6 +23,18 @@ func NewMsOutputDtoFromModel(m *model.Microservice) *MsOutputDto {
 		ID:          m.ID,
 		Name:        m.Name,
 		Description: util.FromNullString(m.Description),
+		Links: []contract.Link{
+			{
+				Rel:  "self",
+				Href: fmt.Sprintf("/api/Microservices/%s", m.ID),
+				Type: "get",
+			},
+			{
+				Rel:  "versions",
+				Href: fmt.Sprintf("/api/Microservices/%s/Versions", m.ID),
+				Type: "get",
+			},
+		},
 	}
 }
 
@@ -37,11 +52,12 @@ type MsVersionRespDto RespDto[*MsVersionOutputDto]
 type MsVersionListRespDto RespDto[[]MsVersionOutputDto]
 
 type MsVersionOutputDto struct {
-	ID          uuid.UUID `json:"id"`
-	Name        string    `json:"name"`
-	Description *string   `json:"description,omitempty"`
-	Url         string    `json:"url"`
-	OpenAPIUrl  string    `json:"openapi_url"`
+	ID          uuid.UUID       `json:"id"`
+	Name        string          `json:"name"`
+	Description *string         `json:"description,omitempty"`
+	Url         string          `json:"url"`
+	OpenAPIUrl  string          `json:"openapi_url"`
+	Links       []contract.Link `json:"links,omitempty"`
 }
 
 func NewMsVersionOutputDtoFromModel(m *model.MicroserviceVersion) *MsVersionOutputDto {
@@ -51,6 +67,18 @@ func NewMsVersionOutputDtoFromModel(m *model.MicroserviceVersion) *MsVersionOutp
 		Description: util.FromNullString(m.Description),
 		Url:         m.Url,
 		OpenAPIUrl:  m.OpenAPIUrl,
+		Links: []contract.Link{
+			{
+				Rel:  "self",
+				Href: fmt.Sprintf("/api/Microservices/%s/Versions/%s", m.MicroserviceID, m.ID),
+				Type: "get",
+			},
+			{
+				Rel:  "microservice",
+				Href: fmt.Sprintf("/api/Microservices/%s", m.MicroserviceID),
+				Type: "get",
+			},
+		},
 	}
 }
 
