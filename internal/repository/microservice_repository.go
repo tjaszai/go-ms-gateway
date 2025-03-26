@@ -14,21 +14,33 @@ func NewMicroserviceRepository(m *db.DatabaseManager) *MicroserviceRepository {
 	return &MicroserviceRepository{DatabaseManager: m}
 }
 
-func (r *MicroserviceRepository) FindAll() ([]model.Microservice, error) {
+func (r *MicroserviceRepository) FindAll(withVersions bool) ([]model.Microservice, error) {
 	var m []model.Microservice
-	err := r.DatabaseManager.GetDB().Preload("Versions").Find(&m).Error
+	dmDB := r.DatabaseManager.GetDB()
+	if withVersions {
+		dmDB = dmDB.Preload("Versions")
+	}
+	err := dmDB.Find(&m).Error
 	return m, err
 }
 
-func (r *MicroserviceRepository) Find(id string) (*model.Microservice, error) {
+func (r *MicroserviceRepository) Find(id string, withVersions bool) (*model.Microservice, error) {
 	var m model.Microservice
-	err := r.DatabaseManager.GetDB().Preload("Versions").Where("id = ?", id).First(&m).Error
+	dmDB := r.DatabaseManager.GetDB()
+	if withVersions {
+		dmDB = dmDB.Preload("Versions")
+	}
+	err := dmDB.Where("id = ?", id).First(&m).Error
 	return &m, err
 }
 
-func (r *MicroserviceRepository) FindByName(name string) (*model.Microservice, error) {
+func (r *MicroserviceRepository) FindByName(name string, withVersions bool) (*model.Microservice, error) {
 	var m model.Microservice
-	err := r.DatabaseManager.GetDB().Preload("Versions").Where("name = ?", name).First(&m).Error
+	dmDB := r.DatabaseManager.GetDB()
+	if withVersions {
+		dmDB = dmDB.Preload("Versions")
+	}
+	err := dmDB.Where("name = ?", name).First(&m).Error
 	return &m, err
 }
 

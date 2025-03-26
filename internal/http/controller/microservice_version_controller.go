@@ -39,7 +39,7 @@ func NewMicroserviceVersionController(
 // @Router         /api/Microservices/{id}/Versions [post]
 func (mvc *MicroserviceVersionController) Create(c *fiber.Ctx) error {
 	id := c.Params("id")
-	ms, _ := mvc.MsRepository.Find(id)
+	ms, _ := mvc.MsRepository.Find(id, false)
 	if ms.ID == uuid.Nil {
 		return c.Status(fiber.StatusNotFound).JSON(dto.NewErrRespDto("Microservice not found.", nil))
 	}
@@ -76,7 +76,7 @@ func (mvc *MicroserviceVersionController) Create(c *fiber.Ctx) error {
 // @Router         /api/Microservices/{id}/Versions/{vid} [get]
 func (mvc *MicroserviceVersionController) GetOne(c *fiber.Ctx) error {
 	id := c.Params("id")
-	ms, _ := mvc.MsRepository.Find(id)
+	ms, _ := mvc.MsRepository.Find(id, false)
 	if ms.ID == uuid.Nil {
 		return c.Status(fiber.StatusNotFound).JSON(dto.NewErrRespDto("Microservice not found.", nil))
 	}
@@ -107,7 +107,7 @@ func (mvc *MicroserviceVersionController) GetOne(c *fiber.Ctx) error {
 // @Router         /api/Microservices/{id}/Versions/{vid} [put]
 func (mvc *MicroserviceVersionController) Update(c *fiber.Ctx) error {
 	id := c.Params("id")
-	ms, _ := mvc.MsRepository.Find(id)
+	ms, _ := mvc.MsRepository.Find(id, false)
 	if ms.ID == uuid.Nil {
 		return c.Status(fiber.StatusNotFound).JSON(dto.NewErrRespDto("Microservice not found.", nil))
 	}
@@ -152,7 +152,7 @@ func (mvc *MicroserviceVersionController) Update(c *fiber.Ctx) error {
 // @Router         /api/Microservices/{id}/Versions/{vid} [delete]
 func (mvc *MicroserviceVersionController) Delete(c *fiber.Ctx) error {
 	id := c.Params("id")
-	ms, _ := mvc.MsRepository.Find(id)
+	ms, _ := mvc.MsRepository.Find(id, false)
 	if ms.ID == uuid.Nil {
 		return c.Status(fiber.StatusNotFound).JSON(dto.NewErrRespDto("Microservice not found.", nil))
 	}
@@ -183,7 +183,7 @@ func (mvc *MicroserviceVersionController) Delete(c *fiber.Ctx) error {
 // @Router         /api/Microservices/{id}/Versions [get]
 func (mvc *MicroserviceVersionController) GetAll(c *fiber.Ctx) error {
 	id := c.Params("id")
-	ms, _ := mvc.MsRepository.Find(id)
+	ms, _ := mvc.MsRepository.Find(id, false)
 	if ms.ID == uuid.Nil {
 		return c.Status(fiber.StatusNotFound).JSON(dto.NewErrRespDto("Microservice not found.", nil))
 	}

@@ -64,7 +64,7 @@ func (mc *MicroserviceController) Create(c *fiber.Ctx) error {
 // @Router         /api/Microservices/{id} [get]
 func (mc *MicroserviceController) GetOne(c *fiber.Ctx) error {
 	id := c.Params("id")
-	m, _ := mc.Repository.Find(id)
+	m, _ := mc.Repository.Find(id, true)
 	if m.ID == uuid.Nil {
 		return c.Status(fiber.StatusNotFound).JSON(dto.NewErrRespDto("Microservice not found.", nil))
 	}
@@ -89,7 +89,7 @@ func (mc *MicroserviceController) GetOne(c *fiber.Ctx) error {
 // @Router         /api/Microservices/{id} [put]
 func (mc *MicroserviceController) Update(c *fiber.Ctx) error {
 	id := c.Params("id")
-	m, _ := mc.Repository.Find(id)
+	m, _ := mc.Repository.Find(id, false)
 	if m.ID == uuid.Nil {
 		return c.Status(fiber.StatusNotFound).JSON(dto.NewErrRespDto("Microservice not found.", nil))
 	}
@@ -128,7 +128,7 @@ func (mc *MicroserviceController) Update(c *fiber.Ctx) error {
 // @Router         /api/Microservices/{id} [delete]
 func (mc *MicroserviceController) Delete(c *fiber.Ctx) error {
 	id := c.Params("id")
-	m, _ := mc.Repository.Find(id)
+	m, _ := mc.Repository.Find(id, true)
 	if m.ID == uuid.Nil {
 		return c.Status(fiber.StatusNotFound).JSON(dto.NewErrRespDto("Microservice not found.", nil))
 	}
@@ -151,7 +151,7 @@ func (mc *MicroserviceController) Delete(c *fiber.Ctx) error {
 // @Failure        500 {object} dto.ErrRespDto
 // @Router         /api/Microservices [get]
 func (mc *MicroserviceController) GetAll(c *fiber.Ctx) error {
-	m, err := mc.Repository.FindAll()
+	m, err := mc.Repository.FindAll(true)
 	if err != nil {
 		log.Println(err)
 		return c.Status(fiber.StatusInternalServerError).JSON(dto.NewErrRespDto("Unexpected error.", nil))
